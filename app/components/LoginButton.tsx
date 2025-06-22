@@ -23,7 +23,7 @@ export default function AuthButton() {
   return (
     <button 
       onClick={() => signIn("google")}
-      className="px-4 py-2 text-sm bg-black text-white rounded-md hover:bg-slate-800 transition-colors flex items-center gap-2"
+      className="px-4 py-2 text-sm bg-white text-black rounded-md hover:bg-slate-200 transition-colors flex items-center gap-2"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
