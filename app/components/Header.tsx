@@ -1,16 +1,45 @@
 import Link from "next/link";
+import { getSession } from "@/lib/session";
 import AuthButton from "./LoginButton";
 
-export default function Header() {
+export default async function Header() {
+  const session = await getSession();
+  const isLoggedIn = !!session;
+
   return (
     <header className="border-b border-slate-100 py-4">
       <div className="container flex items-center justify-between">
-        <Link href="/" className="text-xl font-medium">
-          Travelmate
-        </Link>
-        <nav className="flex items-center gap-6">
+        <div className="flex items-center gap-8">
+          <Link href={isLoggedIn ? "/dashboard" : "/"} className="text-xl font-medium">
+            Travelmate
+          </Link>
+          
+          {isLoggedIn && (
+            <nav className="hidden sm:flex items-center gap-6">
+              <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+                Dashboard
+              </Link>
+              <Link href="/checklists" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+                Checklist Saya
+              </Link>
+              <Link href="/templates" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+                Template
+              </Link>
+            </nav>
+          )}
+        </div>
+        
+        <div className="flex items-center gap-4">
+          {isLoggedIn && (
+            <Link 
+              href="/new-checklist" 
+              className="hidden sm:block px-4 py-2 text-sm bg-black text-white rounded-md hover:bg-slate-800 transition-colors"
+            >
+              Buat Checklist
+            </Link>
+          )}
           <AuthButton />
-        </nav>
+        </div>
       </div>
     </header>
   );
