@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "ts-node -O {\\\"module\\\":\\\"CommonJS\\\"} prisma/seed/index.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
@@ -26,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
