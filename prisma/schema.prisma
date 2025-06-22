@@ -39,8 +39,11 @@ model User {
   name          String?
   emailVerified DateTime?
   image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
   accounts      Account[]
   sessions      Session[]
+  trips         Trip[]
 }
 
 model VerificationToken {
@@ -49,4 +52,63 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Trip {
+  id           String      @id @default(cuid())
+  name         String
+  destination  String
+  startDate    DateTime?
+  endDate      DateTime?
+  description  String?
+  season       String?
+  duration     Int?
+  preferences  String?
+  isTemplate   Boolean     @default(false)
+  templateType String?
+  userId       String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  checklists   Checklist[]
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items     Item[]
+}
+
+model Checklist {
+  id        String          @id @default(cuid())
+  tripId    String
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  trip      Trip            @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  items     ChecklistItem[]
+}
+
+model Item {
+  id             String          @id @default(cuid())
+  name           String
+  categoryId     String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  checklistItems ChecklistItem[]
+  category       Category        @relation(fields: [categoryId], references: [id])
+
+  @@unique([name, categoryId], name: "name_categoryId")
+}
+
+model ChecklistItem {
+  id          String    @id @default(cuid())
+  checklistId String
+  itemId      String
+  isChecked   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  checklist   Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  item        Item      @relation(fields: [itemId], references: [id])
 }
