@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Travelmate
 
-## Getting Started
+> Full-stack travel packing checklist application built with Next.js, TypeScript, Tailwind CSS, and PostgreSQL.
 
-First, run the development server:
+## Repository Description
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+TravelMate helps travelers prepare their packing checklist in seconds. With Google OAuth authentication, category tagging, and AI-powered generation (coming soon), you can focus on your journey instead of worrying about what to pack.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- **Google OAuth Authentication**: Secure and simple login with your Google account.  
+- **Dynamic Checklist Builder**: Create a packing checklist by entering destination, duration, season, and preferences.  
+- **Category Tagging**: Organize items into Clothing, Documents, Electronics, Food, Health, and More.  
+- **Checklist Management**: Add, edit, remove items; everything syncs to your dashboard.  
+- **Export & Sharing**: Export checklists as PDF or share via unique links.  
+- **AI-Generated Packing Lists** (upcoming): One-click generation of optimized checklists using Google Gemini.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Framework**: Next.js (App Router) + TypeScript  
+- **Styling**: Tailwind CSS  
+- **Database**: PostgreSQL (Prisma ORM)  
+- **Authentication**: Google OAuth  
+- **Cache**: Redis
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Roadmap
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- AI-powered checklist generation with caching and validation. 
+- Real-time Collaboration: Share and edit checklists with friends or family.
+- Calendar Integration: Sync packing reminders with Google Calendar.
+- Offline Support / PWA: Access your checklists without internet.
+- Notifications & Reminders: Automated packing reminders.
+- Multi-language: Support for English and Bahasa Indonesia.
+
