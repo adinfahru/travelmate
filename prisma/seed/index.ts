@@ -93,6 +93,7 @@ async function main() {
   }
 
   // Create template trips
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const templates = [
     {
       name: "Template Gunung",
