@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "./components/AuthProvider";
 
-const geist = Geist({
+const font = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
 });
@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geist.className} text-slate-900 antialiased`}>
+      <body className={`${font.className} text-slate-900 antialiased`}>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
