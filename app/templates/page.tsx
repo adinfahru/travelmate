@@ -44,8 +44,8 @@ export default async function TemplatesPage() {
     <>
       <Header />
       <main className="container py-12">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">Template Checklist</h1>
+        <div className="max-w-4xl mx-auto mt-5">
+          <h1 className="text-2xl font-bold mb-8">Template Checklist</h1>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {templates.map((template) => (

@@ -30,14 +30,6 @@ export default async function Header() {
         </div>
         
         <div className="flex items-center gap-4">
-          {isLoggedIn && (
-            <Link 
-              href="/new-checklist" 
-              className="hidden sm:block px-4 py-2 text-sm bg-black text-white rounded-md hover:bg-slate-800 transition-colors"
-            >
-              Buat Checklist
-            </Link>
-          )}
           <AuthButton />
         </div>
       </div>

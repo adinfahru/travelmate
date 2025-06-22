@@ -1,217 +1,154 @@
 "use server";
 
-import { redirect } from "next/navigation";
+import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import { getUserSession } from "@/lib/session";
 
-export async function createChecklist(formData: FormData) {
+// Define the type for the checklist result
+export type ChecklistResult = {
+  success: boolean;
+  error?: string;
+  checklistId?: string;
+};
+
+export async function createChecklist(
+  formData: FormData
+): Promise<ChecklistResult> {
+  const session = await getSession();
+
+  if (!session?.user) {
+    return {
+      success: false,
+      error: "You must be logged in to create a checklist",
+    };
+  }
+
   try {
-    // Get the authenticated user
-    const user = await getUserSession();
-
-    // Extract form data
+    // Get form values
     const name = formData.get("name") as string;
     const destination = formData.get("destination") as string;
-    const startDateStr = formData.get("startDate") as string;
-    const endDateStr = formData.get("endDate") as string;
-    const season = formData.get("season") as string;
-    const duration = parseInt(formData.get("duration") as string);
-    const preferences = formData.get("preferences") as string;
-    const templateType = (formData.get("templateType") as string) || null;
+    const startDate = formData.get("startDate") as string;
+    const endDate = formData.get("endDate") as string;
+    const duration = parseInt(formData.get("duration") as string) || 0;
+    const season = (formData.get("season") as string) || undefined;
+    const preferences = (formData.get("preferences") as string) || undefined;
+    const templateType = (formData.get("templateType") as string) || undefined;
 
-    if (!name || !destination) {
-      throw new Error("Name and destination are required");
+    // Validate required fields
+    if (!name || !destination || !startDate || !endDate || !duration) {
+      return { success: false, error: "All required fields must be provided" };
     }
 
-    // Create trip
+    // Create trip and checklist
     const trip = await prisma.trip.create({
       data: {
         name,
         destination,
-        startDate: startDateStr ? new Date(startDateStr) : null,
-        endDate: endDateStr ? new Date(endDateStr) : null,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        duration,
         season,
-        duration: isNaN(duration) ? null : duration,
         preferences,
-        templateType,
-        userId: user.id,
+        userId: session.user.id as string,
       },
     });
 
-    // Create empty checklist for this trip
     const checklist = await prisma.checklist.create({
       data: {
         tripId: trip.id,
       },
-    }); // If a template was selected, pre-populate checklist items
+    });
+    // If a template was selected, add template items
     if (templateType && templateType !== "kosong") {
-      // Get all categories
-      const categories = await prisma.category.findMany();
+      // Get categories based on template type
+      const categoryNames: string[] = [];
 
-      // Define template-specific items by category
-      const templateItems: Record<string, Record<string, string[]>> = {
-        gunung: {
-          "Perlengkapan Outdoor": [
-            "Tenda",
-            "Sleeping bag",
-            "Matras",
-            "Headlamp",
-            "Kompor portable",
-            "Nesting cookware",
-            "Gas kaleng",
-            "Pisau lipat",
-            "Trekking pole",
-            "Jas hujan",
-            "Gaiter",
-          ],
-          Pakaian: [
-            "Jaket waterproof",
-            "Jaket fleece",
-            "Baselayer",
-            "Celana hiking",
-            "Kaos kaki tebal",
-            "Sarung tangan",
-            "Kupluk/topi",
-            "Buff",
-          ],
-          "Makanan & Minuman": [
-            "Botol air (min. 2L)",
-            "Makanan instan",
-            "Snack energi",
-            "Kopi/teh sachet",
-          ],
-          "Kesehatan & Kebersihan": [
-            "P3K dasar",
-            "Tabir surya",
-            "Obat pribadi",
-            "Hand sanitizer",
-          ],
-        },
-        pantai: {
-          Pakaian: [
-            "Baju renang",
-            "Sandal",
-            "Baju ganti",
-            "Topi pantai",
-            "Kacamata hitam",
-          ],
-          "Perlengkapan Pantai": [
-            "Tikar/alas duduk",
-            "Payung pantai",
-            "Pelampung",
-            "Alat snorkeling",
-          ],
-          "Kesehatan & Kebersihan": [
-            "Tabir surya",
-            "After sun gel",
-            "Handuk",
-            "Tisu basah",
-          ],
-          Gadget: ["Kamera underwater", "Powerbank"],
-        },
-        antarkota: {
-          Dokumen: [
-            "KTP/SIM",
-            "Tiket transportasi",
-            "Voucher hotel",
-            "Uang tunai",
-          ],
-          Pakaian: [
-            "Pakaian harian",
-            "Pakaian formal (bila perlu)",
-            "Pakaian dalam",
-            "Piyama",
-          ],
-          "Kesehatan & Kebersihan": [
-            "Obat pribadi",
-            "Perlengkapan mandi",
-            "Masker",
-          ],
-          Gadget: ["Charger HP", "Powerbank", "Earphone"],
-        },
-        luarnegeri: {
-          Dokumen: [
-            "Paspor",
-            "Visa",
-            "Tiket pesawat",
-            "Asuransi perjalanan",
-            "Voucher hotel",
-            "International driving permit",
-            "Uang asing",
-          ],
-          Pakaian: [
-            "Pakaian sesuai musim tujuan",
-            "Pakaian formal (bila perlu)",
-            "Pakaian dalam",
-            "Piyama",
-            "Jaket",
-          ],
-          "Kesehatan & Kebersihan": [
-            "Obat pribadi",
-            "Perlengkapan mandi",
-            "First aid kit",
-            "Masker",
-            "Hand sanitizer",
-          ],
-          Gadget: [
-            "Adapter universal",
-            "Charger HP",
-            "Powerbank",
-            "Kamera",
-            "Converter mata uang",
-          ],
-        },
-      };
+      if (templateType === "gunung") {
+        categoryNames.push("Pakaian", "Kesehatan", "Peralatan", "Makanan");
+      } else if (templateType === "pantai") {
+        categoryNames.push("Pakaian", "Kesehatan", "Peralatan", "Hiburan");
+      } else if (templateType === "antarkota") {
+        categoryNames.push("Dokumen", "Elektronik", "Pakaian");
+      } else if (templateType === "luarnegeri") {
+        categoryNames.push("Dokumen", "Elektronik", "Pakaian", "Kesehatan");
+      }
 
-      // Get items for the selected template
-      const templateConfig = templateItems[templateType];
-      if (templateConfig) {
-        // Process each category in the template
-        for (const [categoryName, itemNames] of Object.entries(
-          templateConfig
-        )) {
-          // Find the category
-          const category = categories.find((c) => c.name === categoryName);
+      // Get items by categories
+      if (categoryNames.length > 0) {
+        const categories = await prisma.category.findMany({
+          where: {
+            name: {
+              in: categoryNames,
+            },
+          },
+          include: {
+            items: true,
+          },
+        });
 
-          if (category) {
-            for (const itemName of itemNames) {
-              // Try to find existing item
-              let item = await prisma.item.findFirst({
-                where: {
-                  name: { equals: itemName, mode: "insensitive" },
-                  categoryId: category.id,
-                },
-              });
+        // Now add all items to the checklist
+        const checklistItems = [];
 
-              // Create item if it doesn't exist
-              if (!item) {
-                item = await prisma.item.create({
-                  data: {
-                    name: itemName,
-                    categoryId: category.id,
-                  },
-                });
-              }
-
-              // Add item to checklist
-              await prisma.checklistItem.create({
-                data: {
-                  checklistId: checklist.id,
-                  itemId: item.id,
-                  isChecked: false,
-                },
-              });
-            }
+        for (const category of categories) {
+          for (const item of category.items) {
+            checklistItems.push({
+              checklistId: checklist.id,
+              itemId: item.id,
+              isChecked: false,
+            });
           }
+        }
+
+        if (checklistItems.length > 0) {
+          await prisma.checklistItem.createMany({
+            data: checklistItems,
+          });
         }
       }
     }
 
-    // Redirect to the checklist page
-    redirect(`/checklists/${checklist.id}`);
+    // Return success result with the new checklist ID
+    return {
+      success: true,
+      checklistId: checklist.id,
+    };
   } catch (error) {
-    console.error("Failed to create checklist:", error);
-    // In a real app, you'd want to return the error and display it in the form
-    redirect("/dashboard?error=Failed+to+create+checklist");
+    console.error("Error creating checklist:", error);
+    return {
+      success: false,
+      error:
+        typeof error === "object" && error !== null && "message" in error
+          ? (error as Error).message
+          : "An error occurred while creating the checklist",
+    };
+  }
+}
+
+// Define the function to get a checklist by ID
+export async function getChecklist(id: string) {
+  const session = await getSession();
+
+  if (!session?.user) {
+    return null;
+  }
+
+  try {
+    return await prisma.checklist.findUnique({
+      where: { id },
+      include: {
+        trip: true,
+        items: {
+          include: {
+            item: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching checklist:", error);
+    return null;
   }
 }
