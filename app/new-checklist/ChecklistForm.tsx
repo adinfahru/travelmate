@@ -31,10 +31,45 @@ function SubmitButton() {
 
 export default function ChecklistForm({ templateType }: { templateType?: string }) {
   const [error, setError] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+  const [duration, setDuration] = useState<number>(0);
   const [, startTransition] = useTransition();
   const router = useRouter();
-    const handleFormAction = async (formData: FormData) => {
+  
+  // Calculate duration when dates change
+  const calculateDuration = (start: string, end: string) => {
+    if (start && end) {
+      const startDateObj = new Date(start);
+      const endDateObj = new Date(end);
+      
+      // Calculate difference in days
+      const diffTime = Math.abs(endDateObj.getTime() - startDateObj.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include the start day
+      
+      return diffDays > 0 ? diffDays : 0;
+    }
+    return 0;
+  };
+  
+  // Update duration when dates change
+  const handleDateChange = (type: 'start' | 'end', value: string) => {
+    if (type === 'start') {
+      setStartDate(value);
+      setDuration(calculateDuration(value, endDate));
+    } else {
+      setEndDate(value);
+      setDuration(calculateDuration(startDate, value));
+    }
+  };
+  
+  const handleFormAction = async (formData: FormData) => {
     setError(null);
+    
+    // Add calculated duration to form data if needed
+    if (startDate && endDate && duration > 0) {
+      formData.set('duration', duration.toString());
+    }
     
     startTransition(async () => {
       const result = await createChecklist(formData);
@@ -98,8 +133,7 @@ export default function ChecklistForm({ templateType }: { templateType?: string 
           />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">          <div>
             <label htmlFor="startDate" className="block text-sm font-medium text-slate-700 mb-1">
               Tanggal Mulai
             </label>
@@ -109,6 +143,8 @@ export default function ChecklistForm({ templateType }: { templateType?: string 
               name="startDate"
               className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               required
+              value={startDate}
+              onChange={(e) => handleDateChange('start', e.target.value)}
             />
           </div>
           
@@ -122,6 +158,8 @@ export default function ChecklistForm({ templateType }: { templateType?: string 
               name="endDate"
               className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               required
+              value={endDate}
+              onChange={(e) => handleDateChange('end', e.target.value)}
             />
           </div>
         </div>
@@ -143,20 +181,24 @@ export default function ChecklistForm({ templateType }: { templateType?: string 
               <option value="dry">Kemarau</option>
             </select>
           </div>
-          
-          <div>
+            <div>
             <label htmlFor="duration" className="block text-sm font-medium text-slate-700 mb-1">
               Durasi (hari)
             </label>
-            <input
-              type="number"
-              id="duration"
-              name="duration"
-              min="1"
-              placeholder="contoh: 7"
-              className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              required
-            />
+            <div className="relative">
+              <input
+                type="number"
+                id="duration"
+                name="duration"
+                min="1"
+                value={duration || ''}
+                className="w-full px-3 py-2 border border-slate-200 rounded-md bg-slate-50 focus:outline-none focus:ring-1 focus:ring-slate-300"
+                readOnly
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                Otomatis terhitung
+              </div>
+            </div>
           </div>
         </div>
         
