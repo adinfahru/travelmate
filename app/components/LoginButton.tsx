@@ -22,7 +22,7 @@ export default function AuthButton() {
   }
   return (
     <button 
-      onClick={() => signIn("google")}
+      onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
       className="px-4 py-2 text-sm bg-white text-black rounded-md hover:bg-slate-200 transition-colors flex items-center gap-2"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
