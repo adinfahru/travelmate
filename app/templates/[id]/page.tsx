@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
-import Header from "../../components/Header";
 import Link from "next/link";
 
 export default async function TemplateDetailPage({ params }: { params: { id: string } }) {
@@ -157,8 +156,7 @@ export default async function TemplateDetailPage({ params }: { params: { id: str
   
   return (
     <>
-      <Header />
-      <main className="container py-12">
+      <div className="container py-12">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <Link href="/templates" className="text-sm text-slate-600 hover:text-slate-900 flex items-center gap-2">
@@ -212,7 +210,7 @@ export default async function TemplateDetailPage({ params }: { params: { id: str
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

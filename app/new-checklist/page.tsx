@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
-import Header from "../components/Header";
 import Link from "next/link";
 import ChecklistForm from "./ChecklistForm";
 
@@ -22,8 +21,7 @@ export default async function NewChecklistPage({
   
   return (
     <>
-      <Header />
-      <main className="container py-12">
+      <div className="container py-12">
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
             <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-900 flex items-center gap-2">
@@ -69,7 +67,7 @@ export default async function NewChecklistPage({
           </div>
             <ChecklistForm templateType={templateType} />
         </div>
-      </main>
+      </div>
     </>
   );
 }

@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
-import Header from "./components/Header";
 import Link from "next/link";
 
 export default async function Home() {
@@ -14,8 +13,6 @@ export default async function Home() {
   
   return (
     <>
-      <Header />
-      
       {/* Hero Section */}
       <section className="container pt-20 md:pt-32 pb-16">
         <div className="max-w-4xl py-32 mx-auto text-center">

@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import Header from "../../components/Header";
 import Link from "next/link";
 
 // Import client components
@@ -9,9 +8,11 @@ import { ChecklistItem } from "./ChecklistItem";
 import { AddItemForm } from "./AddItemForm";
 
 export default async function ChecklistDetailPage({
-  params
+  params,
+  searchParams
 }: {
-  params: { id: string }
+  params: { id: string },
+  searchParams: { fallback?: string }
 }) {
   // Check if user is authenticated
   const session = await getSession();
@@ -20,6 +21,9 @@ export default async function ChecklistDetailPage({
   if (!session) {
     redirect("/");
   }
+  
+  // Check if this is a fallback-generated list
+  const usedFallback = searchParams.fallback === 'true';
   
   // Get checklist data
   const checklist = await prisma.checklist.findUnique({
@@ -61,8 +65,7 @@ export default async function ChecklistDetailPage({
   
   return (
     <>
-      <Header />
-      <main className="container py-12">
+      <div className="container py-12">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <Link href="/checklists" className="text-sm text-slate-600 hover:text-slate-900 flex items-center gap-2">
@@ -87,6 +90,16 @@ export default async function ChecklistDetailPage({
                 </>
               )}
             </div>
+            
+            {usedFallback && (
+              <div className="mt-4 bg-yellow-50 border border-yellow-100 text-yellow-800 p-4 rounded-md">
+                <p className="font-medium">Daftar Fallback Digunakan</p>
+                <p className="mt-1 text-sm">
+                  Daftar barang ini dibuat menggunakan daftar dasar karena OpenRouter API sedang dibatasi (rate-limited).
+                  Silakan tambahkan item yang diperlukan secara manual.
+                </p>
+              </div>
+            )}
           </div>
           
           {isEmpty ? (
@@ -123,7 +136,7 @@ export default async function ChecklistDetailPage({
             </>
           )}
         </div>
-      </main>
+      </div>
     </>
   );
 }

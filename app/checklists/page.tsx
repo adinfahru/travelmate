@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import Header from "../components/Header";
 import Link from "next/link";
 
 export default async function ChecklistsPage() {
@@ -41,8 +40,7 @@ export default async function ChecklistsPage() {
   
   return (
     <>
-      <Header />
-      <main className="container py-12">
+      <div className="container py-12">
         <div className="max-w-4xl mx-auto mt-5">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-2xl font-bold">Checklist Saya</h1>
@@ -124,7 +122,7 @@ export default async function ChecklistsPage() {
             </div>
           )}
         </div>
-      </main>
+      </div>
     </>
   );
 }

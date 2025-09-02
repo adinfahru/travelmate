@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import Header from "../components/Header";
 import Link from "next/link";
 
 export default async function DashboardPage() {
@@ -41,8 +40,7 @@ export default async function DashboardPage() {
   
   return (
     <>
-      <Header />
-      <main className="container py-12">
+      <div className="container py-12">
         <div className="max-w-4xl mx-auto mt-5">
           <h1 className="text-2xl font-bold mb-8">Selamat Datang, {session.user?.name}</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
@@ -132,7 +130,7 @@ export default async function DashboardPage() {
           </div>
 
         </div>
-      </main>
+      </div>
     </>
   );
 }

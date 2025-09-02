@@ -75,7 +75,7 @@ model Trip {
 
 model Category {
   id        String   @id @default(cuid())
-  name      String   @unique
+  name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   items     Item[]
@@ -98,8 +98,6 @@ model Item {
   updatedAt      DateTime        @updatedAt
   checklistItems ChecklistItem[]
   category       Category        @relation(fields: [categoryId], references: [id])
-
-  @@unique([name, categoryId], name: "name_categoryId")
 }
 
 model ChecklistItem {

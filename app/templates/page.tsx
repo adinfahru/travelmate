@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
-import Header from "../components/Header";
 import Link from "next/link";
 
 export default async function TemplatesPage() {
@@ -42,8 +41,7 @@ export default async function TemplatesPage() {
   
   return (
     <>
-      <Header />
-      <main className="container py-12">
+      <div className="container py-12">
         <div className="max-w-4xl mx-auto mt-5">
           <h1 className="text-2xl font-bold mb-8">Template Checklist</h1>
           
@@ -78,7 +76,7 @@ export default async function TemplatesPage() {
             ))}
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

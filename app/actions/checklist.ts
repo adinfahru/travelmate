@@ -8,6 +8,7 @@ export type ChecklistResult = {
   success: boolean;
   error?: string;
   checklistId?: string;
+  usedFallback?: boolean;
 };
 
 export async function createChecklist(
