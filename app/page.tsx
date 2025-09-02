@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
 import Link from "next/link";
+import { LandingNavbar } from "./components/LandingNavbar";
 
 export default async function Home() {
   // Check if user is authenticated
@@ -13,8 +14,9 @@ export default async function Home() {
   
   return (
     <>
+      <LandingNavbar />
       {/* Hero Section */}
-      <section className="container pt-20 md:pt-32 pb-16">
+      <section className="container pt-24 md:pt-32 pb-16">
         <div className="max-w-4xl py-32 mx-auto text-center">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-balance mb-6">
             Travelmate
@@ -53,7 +55,7 @@ export default async function Home() {
       </section>
       
       {/* Features Section */}
-      <section className="container py-20">
+      <section id="features" className="container py-20">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center">Fitur Unggulan</h2>
           
@@ -138,7 +140,7 @@ export default async function Home() {
       </section>
       
       {/* Why Choose Us Section */}
-      <section className="bg-slate-50 py-20">
+      <section id="how-it-works" className="bg-slate-50 py-20">
         <div className="container">
           <div className="max-w-4xl mx-auto text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-10">Kenapa Harus TravelMate?</h2>
@@ -173,7 +175,7 @@ export default async function Home() {
       </section>
       
       {/* CTA Section */}
-      <section className="container py-20">
+      <section id="benefits" className="container py-20">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Mulai Packing dengan Teratur Sekarang</h2>
           <p className="text-lg text-slate-600 mb-10 max-w-2xl mx-auto">

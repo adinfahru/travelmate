@@ -35,3 +35,13 @@ body {
   margin: 0 auto;
   padding: 0 1rem;
 }
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Add scroll padding to account for fixed navbar */
+html {
+  scroll-padding-top: 5rem;
+}
